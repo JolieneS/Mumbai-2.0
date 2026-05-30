@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF8">
+    <meta name="viewport" content="width=device-width , initial-scale = 1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Mumbai 2.0</title>
+</head>
+
+<body>
+   
+<div id="intro-screen">
+  <div id="intro-content">
+    <div id="intro-title">MUMBAI 2.0</div>
+    <div id="intro-subtitle">The city above is clean.<br>Beneath it — chaos.<br><br>
+    You have been dropped into<br>the underground mafia world.<br><br>
+    <span style="color:#888">Survive.</span></div>
+    <div id="intro-enter" class="blink">Press ENTER to continue</div>
+  </div>
+</div>
+
+<div id="rules-screen" style="display:none">
+  <div id="rules-content">
+    <div class="rules-title">— HOW TO SURVIVE —</div>
+    <div class="rules-grid">
+      <div class="rules-section">MOVEMENT</div>
+      <div></div>
+      <div class="rules-key">W / A / S / D</div>
+      <div class="rules-val">Move</div>
+      <div class="rules-key">Mouse</div>
+      <div class="rules-val">Aim</div>
+      <div class="rules-key">Click / SPACE</div>
+      <div class="rules-val">Shoot</div>
+      <div class="rules-key">Q</div>
+      <div class="rules-val">Use powerup</div>
+      <div class="rules-key">P</div>
+      <div class="rules-val">Pause</div>
+      <div class="rules-key">E</div>
+      <div class="rules-val">Close shop</div>
+
+      <div class="rules-section">ENEMIES</div>
+      <div></div>
+      <div class="rules-key" style="color:#cc2222">● Grunt</div>
+      <div class="rules-val">Fast, shoots often, low HP</div>
+      <div class="rules-key" style="color:#8b0000">● Tank</div>
+      <div class="rules-val">Slow, heavy HP, hits hard</div>
+      <div class="rules-key" style="color:#6a0dad">● Sniper</div>
+      <div class="rules-val">Long range, deadly</div>
+      <div class="rules-key" style="color:#2980b9">● Guard</div>
+      <div class="rules-val">Corridors only, immortal</div>
+
+      <div class="rules-section">POWERUPS</div>
+      <div></div>
+      <div class="rules-key" style="color:#00ffff">SHIELD</div>
+      <div class="rules-val">5s invincibility</div>
+      <div class="rules-key" style="color:#2ecc71">SPEED</div>
+      <div class="rules-val">2× movement for 4s</div>
+      <div class="rules-key" style="color:#f39c12">INVIS</div>
+      <div class="rules-val">Guards lose detection 6s</div>
+    </div>
+    <div id="rules-enter" class="blink">Press ENTER to start</div>
+  </div>
+</div>
+
+    <canvas id="gameCanvas"></canvas>
+<div id="hud">
+ 
+  <div id="hud-healthbar-wrap">
+    <div id="hud-healthbar-label">HP</div>
+    <div id="hud-healthbar-track">
+      <div id="hud-healthbar-fill"></div>
+    </div>
+    <div id="hud-healthbar-num">100</div>
+  </div>
+
+  
+  <div class="hud-row">
+    <span class="hud-label">Score</span>
+    <span class="hud-value" id="hud-score">0</span>
+  </div>
+  <div class="hud-row">
+    <span class="hud-label">Coins</span>
+    <span class="hud-value" id="hud-coins">0</span>
+  </div>
+  <div class="hud-row">
+    <span class="hud-label">Depth</span>
+    <span class="hud-value" id="hud-depth">1</span>
+  </div>
+  <div class="hud-row">
+    <span class="hud-label">Timer</span>
+    <span class="hud-value" id="hud-timer">0:00</span>
+  </div>
+  <div class="hud-row">
+    <span class="hud-label">Ammo</span>
+    <span class="hud-value" id="hud-ammo">30</span>
+  </div>
+
+  
+  <div id="hud-powerup-section">
+    <div id="hud-powerup-label">POWERUP</div>
+    <button id="hud-powerup-btn" onclick="player.activatePowerup()">
+      none
+    </button>
+  </div>
+</div>
+
+<div id="gameover-screen" style="display:none">
+  <div id="gameover-content">
+
+    <div id="gameover-title">YOU DIED</div>
+    <div id="gameover-subtitle">The underground claimed another soul.</div>
+
+    <div id="gameover-stats">
+      <div class="stat-row">
+        <span class="stat-label">Time Survived</span>
+        <span class="stat-value" id="go-timer">0m 0s</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Final Score</span>
+        <span class="stat-value" id="go-score">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Coins Earned</span>
+        <span class="stat-value" id="go-coins">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Depth Reached</span>
+        <span class="stat-value" id="go-depth">1</span>
+      </div>
+    </div>
+
+    <div id="gameover-restart" class="blink">Press R to play again</div>
+
+  </div>
+</div>
+
+    <span id="hud-ammo" style="color: #ffffff;">Ammo: 30</span>
+    <span id="hud-powerup" style="color: #00ffff;">Powerup: none</span>
+
+<script src="constants.js"></script>
+<script src="input.js"></script>
+<script src="player.js"></script>
+<script src="camera.js"></script>
+<script src="room.js"></script>
+<script src="guard.js"></script>
+<script src="world.js"></script>
+<script src="game.js"></script>
+<script src="collision.js"></script>
+<script src="enemy.js"></script>
+<script src="loot.js"></script>
+<script src="vision.js"></script>
+<script src="audio.js"></script>
+<script src="shop.js"></script>
+
+</body>
+</html>

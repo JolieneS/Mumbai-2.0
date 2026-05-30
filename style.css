@@ -1,0 +1,345 @@
+* { 
+    margin: 0;
+     padding: 0;
+      box-sizing: border-box;
+     }
+
+body {
+     background: black; 
+     overflow: hidden; 
+    }
+
+#gameCanvas { 
+    display: block;
+     width: 100vw; 
+     height: 100vh; 
+    }
+
+#hud {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(241, 196, 15, 0.4);
+  border-radius: 8px;
+  padding: 10px 0;
+  min-width: 180px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.hud-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.hud-row:last-child {
+  border-bottom: none;
+}
+
+.hud-label {
+  color: #888;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.hud-value {
+  color: #fff;
+  font-weight: bold;
+}
+
+#hud-health { color: #e74c3c; }
+#hud-score  { color: #f1c40f; }
+#hud-coins  { color: #f39c12; }
+#hud-depth  { color: #3498db; }
+#hud-timer  { color: #e74c3c; }
+#hud-ammo   { color: #ecf0f1; }
+#hud-powerup{ color: #00ffff; }
+
+#hud {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.78);
+  border: 1px solid rgba(241,196,15,0.35);
+  border-radius: 8px;
+  min-width: 190px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+#hud-healthbar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+#hud-healthbar-label {
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 1px;
+  min-width: 18px;
+}
+
+#hud-healthbar-track {
+  flex: 1;
+  height: 10px;
+  background: #1a1a1a;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+#hud-healthbar-fill {
+  height: 100%;
+  width: 100%;
+  background: #2ecc71;
+  border-radius: 5px;
+  transition: width 0.2s, background 0.3s;
+}
+
+#hud-healthbar-num {
+  color: #fff;
+  font-size: 12px;
+  min-width: 28px;
+  text-align: right;
+}
+
+.hud-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.hud-label {
+  color: #888;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hud-value {
+  color: #fff;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+#hud-score   { color: #f1c40f; }
+#hud-coins   { color: #f39c12; }
+#hud-depth   { color: #3498db; }
+#hud-timer   { color: #e74c3c; }
+#hud-ammo    { color: #ecf0f1; }
+
+#hud-powerup-section {
+  padding: 10px 14px;
+  pointer-events: all;
+}
+
+#hud-powerup-label {
+  color: #888;
+  font-size: 10px;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+#hud-powerup-btn {
+  width: 100%;
+  padding: 7px 0;
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  border-radius: 5px;
+  color: #00ffff;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#hud-powerup-btn:hover {
+  background: rgba(0, 255, 255, 0.2);
+}
+
+#hud-powerup-btn:disabled {
+  color: #444;
+  border-color: #333;
+  background: transparent;
+  cursor: default;
+}
+
+#intro-screen, #rules-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  font-family: 'Courier New', monospace;
+}
+
+#intro-content {
+  text-align: center;
+  color: #fff;
+}
+
+#intro-title {
+  font-size: 56px;
+  font-weight: bold;
+  color: #e6c229;
+  letter-spacing: 8px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 30px rgba(230,194,41,0.5);
+}
+
+#intro-subtitle {
+  font-size: 20px;
+  color: #ccc;
+  line-height: 1.8;
+  margin-bottom: 50px;
+}
+
+#rules-content {
+  color: #fff;
+  width: 600px;
+}
+
+.rules-title {
+  font-size: 28px;
+  color: #e6c229;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 30px;
+  margin-bottom: 40px;
+}
+
+.rules-section {
+  color: #e6c229;
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 16px;
+  letter-spacing: 2px;
+}
+
+.rules-key {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.rules-val {
+  color: #fff;
+  font-size: 14px;
+}
+
+#intro-enter, #rules-enter {
+  text-align: center;
+  color: #aaa;
+  font-size: 16px;
+}
+
+.blink {
+  animation: blink 1.2s step-start infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+#gameover-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  font-family: 'Courier New', monospace;
+}
+
+#gameover-content {
+  text-align: center;
+  color: #fff;
+  width: 460px;
+}
+
+#gameover-title {
+  font-size: 72px;
+  font-weight: bold;
+  color: #e74c3c;
+  letter-spacing: 6px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 40px rgba(231,76,60,0.6);
+}
+
+#gameover-subtitle {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+#gameover-stats {
+  border: 1px solid rgba(231,76,60,0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+#go-timer { color: #e74c3c; }
+#go-score { color: #f1c40f; }
+#go-coins { color: #f39c12; }
+#go-depth { color: #3498db; }
+
+#gameover-restart {
+  color: #aaa;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
