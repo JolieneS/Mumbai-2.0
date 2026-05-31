@@ -77,6 +77,24 @@ function init() {
   camera.x = player.x - canvas.width  / 2;
   camera.y = player.y - canvas.height / 2;
 
+  canvas.setAttribute('tabindex', '0');
+canvas.focus();
+
+canvas.addEventListener('click', () => {
+  canvas.focus();
+});
+
+window.addEventListener('click', () => {
+  canvas.focus();
+});
+
+// prevent any element from stealing keyboard focus
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'Space' || e.code === 'Enter') {
+    e.preventDefault();
+  }
+});
+
   requestAnimationFrame(gameLoop);
 }
 
@@ -91,10 +109,14 @@ function gameLoop(timestamp) {
 }
 
 function update(dt) {
-  player.update(dt);
-  camera.update(player.x, player.y);
-  world.update(dt);
-  gameTimer += dt; 
+  try {
+    player.update(dt);
+    camera.update(player.x, player.y);
+    world.update(dt);
+    gameTimer += dt;
+  } catch(err) {
+    console.error('CRASH IN UPDATE:', err.message, err.stack);
+  }
 }
 
 function render() {

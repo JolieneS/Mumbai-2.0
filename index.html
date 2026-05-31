@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF8">
     <meta name="viewport" content="width=device-width , initial-scale = 1.0">
-    <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="style.css" />
     <title>Mumbai 2.0</title>
 </head>
 
@@ -63,6 +63,14 @@
 </div>
 
     <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" tabindex="0"></canvas>
+
+<button id="hud-powerup-btn" 
+  onclick="player.activatePowerup()" 
+  tabindex="-1">
+  none
+</button>
+    
 <div id="hud">
  
   <div id="hud-healthbar-wrap">
@@ -139,18 +147,18 @@
 
 <script src="constants.js"></script>
 <script src="input.js"></script>
+<script src="collision.js"></script>
+<script src="loot.js"></script>
+<script src="audio.js"></script>
 <script src="player.js"></script>
 <script src="camera.js"></script>
+<script src="vision.js"></script>
+<script src="enemy.js"></script>
 <script src="room.js"></script>
 <script src="guard.js"></script>
+<script src="shop.js"></script>
 <script src="world.js"></script>
 <script src="game.js"></script>
-<script src="collision.js"></script>
-<script src="enemy.js"></script>
-<script src="loot.js"></script>
-<script src="vision.js"></script>
-<script src="audio.js"></script>
-<script src="shop.js"></script>
 
 </body>
 </html>

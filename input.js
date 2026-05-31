@@ -2,24 +2,29 @@ const input = {
   keys: {},
   mouseX: 0,
   mouseY: 0,
-  isMouseDown:  false,
-  isSpaceDown:  false,  
+  isMouseDown: false,
+  isSpaceDown: false,
+  isEnterDown: false,
 
   init() {
-    window.addEventListener('keydown', (e) => {
-      input.keys[e.key.toLowerCase()] = true;
-      if (e.code === 'Space') {
-        input.isSpaceDown = true;
-        e.preventDefault(); 
+    // attach to BOTH window and document to catch all cases
+    const handler = (e) => {
+      if (e.type === 'keydown') {
+        input.keys[e.key.toLowerCase()] = true;
+        if (e.code === 'Space')  { input.isSpaceDown = true;  e.preventDefault(); }
+        if (e.code === 'Enter')  { input.isEnterDown = true; }
       }
-    });
+      if (e.type === 'keyup') {
+        input.keys[e.key.toLowerCase()] = false;
+        if (e.code === 'Space')  input.isSpaceDown = false;
+        if (e.code === 'Enter')  input.isEnterDown = false;
+      }
+    };
 
-    window.addEventListener('keyup', (e) => {
-      input.keys[e.key.toLowerCase()] = false;
-      if (e.code === 'Space') {
-        input.isSpaceDown = false;
-      }
-    });
+    window.addEventListener('keydown',   handler);
+    window.addEventListener('keyup',     handler);
+    document.addEventListener('keydown', handler);
+    document.addEventListener('keyup',   handler);
 
     window.addEventListener('mousemove', (e) => {
       input.mouseX = e.clientX;

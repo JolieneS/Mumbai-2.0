@@ -80,31 +80,43 @@ class Room {
  addDoor(x, y, toRoomId, direction) {
   this.doors.push({ x, y, toRoomId, direction, width: DOOR_WIDTH });
 
- 
-  this.walls = this.walls.filter(w => {
+  // find the single closest wall segment to this door
+  // and remove only that one — not all nearby segments
+  let   closestDist = Infinity;
+  let   closestIdx  = -1;
+
+  this.walls.forEach((w, idx) => {
     const midX = (w.x1 + w.x2) / 2;
     const midY = (w.y1 + w.y2) / 2;
     const dist = Math.sqrt((midX - x) ** 2 + (midY - y) ** 2);
-    return dist > DOOR_WIDTH * 0.8;
+    if (dist < closestDist) {
+      closestDist = dist;
+      closestIdx  = idx;
+    }
   });
+
+  // only remove if the closest segment is actually near the door
+  if (closestIdx !== -1 && closestDist < DOOR_WIDTH * 2) {
+    this.walls.splice(closestIdx, 1);
+  }
 }
 
   spawnEnemies() {
-    const count = Math.min(Math.ceil(this.depth * 0.8), 6);
+  // depth 1-2: 0 enemies, depth 3+: max 2 enemies
+  if (this.depth < 3) return;
+  
+  const count = Math.min(this.depth - 2, 2); // max 2 enemies ever
 
-    for (let i = 0; i < count; i++) {
-      const padding = 40;
-      const ex = this.x + padding + Math.random() * (this.width  - padding * 2);
-      const ey = this.y + padding + Math.random() * (this.height - padding * 2);
+  for (let i = 0; i < count; i++) {
+    const padding = 50;
+    const ex = this.x + padding + Math.random() * (this.width  - padding * 2);
+    const ey = this.y + padding + Math.random() * (this.height - padding * 2);
 
-      let type = 'grunt';
-      if (this.depth >= 2 && Math.random() < 0.3) type = 'tank';
-      if (this.depth >= 3 && Math.random() < 0.2) type = 'sniper';
-
-      this.enemies.push(new Enemy(ex, ey, type, this.depth));
-    }
+    // only grunts until deep rooms
+    const type = this.depth >= 5 && Math.random() < 0.3 ? 'tank' : 'grunt';
+    this.enemies.push(new Enemy(ex, ey, type, this.depth));
   }
-
+}
   update(dt) {
   this.enemies.forEach(e => e.update(dt));
 
@@ -129,41 +141,35 @@ class Room {
   });
   }
 
-  draw(ctx) {
-    
-    ctx.fillStyle = FLOOR_COLOR;
+ draw(ctx) {
+  // draw floor as simple rectangle first — reliable for all shapes
+  ctx.fillStyle = FLOOR_COLOR;
+  ctx.fillRect(this.x, this.y, this.width, this.height);
+
+  // draw walls on top
+  ctx.strokeStyle = WALL_COLOR;
+  ctx.lineWidth   = 5;
+  this.walls.forEach(w => {
     ctx.beginPath();
-    if (this.walls.length > 0) {
-      ctx.moveTo(this.walls[0].x1, this.walls[0].y1);
-      this.walls.forEach(w => ctx.lineTo(w.x2, w.y2));
-      ctx.closePath();
-      ctx.fill();
-    }
+    ctx.moveTo(w.x1, w.y1);
+    ctx.lineTo(w.x2, w.y2);
+    ctx.stroke();
+  });
 
-   
-    this.doors.forEach(d => {
-      ctx.fillStyle = this.isLocked ? '#e74c3c' : '#f1c40f';
-      ctx.fillRect(d.x - DOOR_WIDTH / 2, d.y - 8, DOOR_WIDTH, 16);
-      ctx.fillStyle = '#000';
-      ctx.font      = '9px Courier New';
-      ctx.textAlign = 'center';
-      ctx.fillText(this.isLocked ? 'LOCKED' : 'OPEN', d.x, d.y + 3);
-      ctx.textAlign = 'left';
-    });
+  // draw doors
+  this.doors.forEach(d => {
+    ctx.fillStyle = this.isLocked ? '#e74c3c' : '#f1c40f';
+    ctx.fillRect(d.x - DOOR_WIDTH / 2, d.y - 8, DOOR_WIDTH, 16);
+    ctx.fillStyle   = '#000';
+    ctx.font        = '9px Courier New';
+    ctx.textAlign   = 'center';
+    ctx.fillText(this.isLocked ? 'LOCKED' : 'OPEN', d.x, d.y + 3);
+    ctx.textAlign   = 'left';
+  });
 
-   
-    ctx.strokeStyle = WALL_COLOR;
-    ctx.lineWidth   = 4;
-    this.walls.forEach(w => {
-      ctx.beginPath();
-      ctx.moveTo(w.x1, w.y1);
-      ctx.lineTo(w.x2, w.y2);
-      ctx.stroke();
-    });
-
-    this.loot.forEach(l => l.draw(ctx));
-    this.enemies.forEach(e => e.draw(ctx));
-  }
+  this.loot.forEach(l => l.draw(ctx));
+  this.enemies.forEach(e => e.draw(ctx));
+}
 
   onPlayerEnter() {
     if (!this.isCleared) {

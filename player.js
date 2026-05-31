@@ -69,10 +69,11 @@ player_position_y = this.y;
     this.shootTimer += dt;
 
    
-if (this.hasMovedOnce && (input.isMouseDown || input.isSpaceDown)) {
+// at the very bottom of update(dt)
+// shoot on click, space, OR enter
+if (this.hasMovedOnce && (input.isMouseDown || input.isSpaceDown || input.isEnterDown)) {
   this.fireBullet();
 }
-
 
 if (this.activePowerup) {
   this.powerupTimer -= dt;
@@ -110,66 +111,62 @@ if (gameState === 'PLAYING') {
   },
 
   takeDamage(amount) {
-    this.health -= amount;
-    if (this.health <= 0) {
-      this.health = 0;
-      gameState = 'GAMEOVER';
+  // shield powerup blocks all damage
+  if (this.activePowerup === 'SHIELD') return;
 
-    }
+  this.health -= amount;
 
-    audio.playPlayerHit();
+  try { audio.playPlayerHit(); } catch(e) {}
+
+  // never go below 0
+  if (this.health <= 0) {
+    this.health = 0;
+    gameState   = 'GAMEOVER';
+    try { audio.playPlayerDeath(); } catch(e) {}
     showGameOver();
-if (this.health <= 0) audio.playPlayerDeath();
-
-  },
+  }
+},
 
  canShoot() {
   return this.shootTimer >= this.shootCooldown && this.ammo > 0;
 },
 
-  resetShootTimer() {
+ resetShootTimer() {
     this.shootTimer = 0;
-  },
+  },        // ← comma here
 
   fireBullet() {
-  if (!this.canShoot()) return;
+    if (!this.canShoot()) return;
 
- 
-  const bx = this.x + Math.cos(this.angle) * (this.radius + 6);
-  const by = this.y + Math.sin(this.angle) * (this.radius + 6);
+    const bx = this.x + Math.cos(this.angle) * (this.radius + 6);
+    const by = this.y + Math.sin(this.angle) * (this.radius + 6);
 
-  world.bullets.push({
-    x:       bx,
-    y:       by,
-    vx:      Math.cos(this.angle) * BULLET_SPEED,
-    vy:      Math.sin(this.angle) * BULLET_SPEED,
-    owner:   'player',
-    damage:  BULLET_DAMAGE * this.damageMult,
-    bounces: BULLET_BOUNCES,
-    radius:  BULLET_RADIUS,
-    active:  true
-  });
+    world.bullets.push({
+      x:       bx,
+      y:       by,
+      vx:      Math.cos(this.angle) * BULLET_SPEED,
+      vy:      Math.sin(this.angle) * BULLET_SPEED,
+      owner:   'player',
+      damage:  BULLET_DAMAGE * this.damageMult,
+      bounces: BULLET_BOUNCES,
+      radius:  BULLET_RADIUS,
+      active:  true
+    });
 
-  audio.playShoot();
+    this.ammo--;
+    this.resetShootTimer();
+    try { audio.playShoot(); } catch(e) {}
+  },
 
-  this.ammo--;
-  this.resetShootTimer();
-
-  
-  document.getElementById('hud-ammo').textContent = `Ammo: ${this.ammo}`;
-},  
-
-activatePowerup() {
-  if (this.collectedPowerups.length === 0) return;
-
-  const type = this.collectedPowerups.shift(); // take first
-  this.activePowerup  = type;
-  this.powerupTimer   = type === 'SHIELD' ? SHIELD_DURATION :
-                        type === 'SPEED'  ? SPEED_DURATION  :
-                                            INVIS_DURATION;
-
-  if (type === 'SPEED') {
-    this.speed = PLAYER_SPEED * 2;
+  activatePowerup() {
+    if (this.collectedPowerups.length === 0) return;
+    const type        = this.collectedPowerups.shift();
+    this.activePowerup = type;
+    this.powerupTimer  = type === 'SHIELD' ? SHIELD_DURATION :
+                         type === 'SPEED'  ? SPEED_DURATION  :
+                                             INVIS_DURATION;
+    if (type === 'SPEED') this.speed = PLAYER_SPEED * 2;
   }
-},
+
+  // ← closing brace of the entire player object
 };

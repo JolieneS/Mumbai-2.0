@@ -19,40 +19,39 @@ class Enemy {
     const depthSpeedMult  = Math.pow(DIFFICULTY_SPEED_MULT,  depth - 1);
     const depthHealthMult = Math.pow(DIFFICULTY_HEALTH_MULT, depth - 1);
 
-    if (type === 'grunt') {
-      this.radius        = 10;
-      this.maxHealth     = 30  * depthHealthMult;
-      this.speed         = 90  * depthSpeedMult;
-      this.shootCooldown = 1.2;
-      this.shootRange    = 200;
-      this.detectRange   = 180;
-      this.arcAngle      = 1.2;
-      this.damage        = 10;
-      this.color         = '#cc2222';
+   if (type === 'grunt') {
+  this.radius        = 10;
+  this.maxHealth     = 30  * depthHealthMult;
+  this.speed         = 90  * depthSpeedMult;
+  this.shootCooldown = 1.2;
+  this.shootRange    = 200;
+  this.detectRange   = 180;
+  this.arcAngle      = 1.2;
+  this.damage        = 20;  // ← change from 10 to 20
+  this.color         = '#cc2222';
 
-    } else if (type === 'tank') {
-      this.radius        = 14;
-      this.maxHealth     = 80  * depthHealthMult;
-      this.speed         = 50  * depthSpeedMult;
-      this.shootCooldown = 2.0;
-      this.shootRange    = 150;
-      this.detectRange   = 140;
-      this.arcAngle      = 1.8;
-      this.damage        = 25;
-      this.color         = '#8b0000';
+} else if (type === 'tank') {
+  this.radius        = 14;
+  this.maxHealth     = 80  * depthHealthMult;
+  this.speed         = 50  * depthSpeedMult;
+  this.shootCooldown = 2.0;
+  this.shootRange    = 150;
+  this.detectRange   = 140;
+  this.arcAngle      = 1.8;
+  this.damage        = 35;  // ← tank hits harder
+  this.color         = '#8b0000';
 
-    } else if (type === 'sniper') {
-      this.radius        = 9;
-      this.maxHealth     = 20  * depthHealthMult;
-      this.speed         = 60  * depthSpeedMult;
-      this.shootCooldown = 3.0;
-      this.shootRange    = 350;
-      this.detectRange   = 300;
-      this.arcAngle      = 0.6;
-      this.damage        = 35;
-      this.color         = '#6a0dad';
-    }
-
+} else if (type === 'sniper') {
+  this.radius        = 9;
+  this.maxHealth     = 20  * depthHealthMult;
+  this.speed         = 60  * depthSpeedMult;
+  this.shootCooldown = 3.0;
+  this.shootRange    = 350;
+  this.detectRange   = 300;
+  this.arcAngle      = 0.6;
+  this.damage        = 40;  // ← sniper is deadly
+  this.color         = '#6a0dad';
+}
     this.health = this.maxHealth;
 
     this.patrolPoints = [
@@ -61,40 +60,39 @@ class Enemy {
     ];
   }
 
-  update(dt) {
-    if (this.isDead) return;
+  // FIND AND REPLACE — these two methods together
+update(dt) {
+  if (this.isDead) return;
 
-    if (this.activationTimer < this.activationDelay) {
-      this.activationTimer += dt;
-      return;
-    }
-
-    if (this.alerted && this.state === 'IDLE') {
-      this.state = 'ALERT';
-    }
-
-    this.runState(dt);
+  if (this.activationTimer < this.activationDelay) {
+    this.activationTimer += dt;
+    const dx   = player.x - this.x;
+    const dy   = player.y - this.y;
+    this.angle = Math.atan2(dy, dx);
     this.checkBulletHits();
+    return;
   }
 
-  runState(dt) {
-
-    this.doStationary(dt);
+  if (this.alerted && this.state === 'IDLE') {
+    this.state = 'ALERT';
   }
 
-  doStationary(dt) {
+  // inline the state call — no separate runState needed
+  this.doStationary(dt);
+  this.checkBulletHits();
+}
+
+doStationary(dt) {
   const dx   = player.x - this.x;
   const dy   = player.y - this.y;
   const dist = Math.sqrt(dx * dx + dy * dy);
 
+  // always face the player
   this.angle = Math.atan2(dy, dx);
 
-  
-  const myRoom     = world.getRoomAt(this.x, this.y);
-  const playerRoom = world.getRoomAt(player.x, player.y);
-  const sameRoom   = myRoom && playerRoom && myRoom.id === playerRoom.id;
-
-  if (sameRoom && dist < this.shootRange) {
+  // check if player is close enough — remove room check
+  // room check was failing for irregular shapes
+  if (dist < this.shootRange) {
     this.shootTimer += dt;
     if (this.shootTimer >= this.shootCooldown) {
       this.shoot();
@@ -102,7 +100,6 @@ class Enemy {
     }
   }
 }
-
  
   doIdle(dt)   {}
   doPatrol(dt) {}

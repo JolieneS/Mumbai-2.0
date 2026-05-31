@@ -26,23 +26,21 @@ class Guard {
   }
 
   checkPlayerDetection() {
-    const dx   = player.x - this.x;
-    const dy   = player.y - this.y;
-    const dist = Math.sqrt(dx*dx + dy*dy);
+  const dx   = player.x - this.x;
+  const dy   = player.y - this.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-   
-    const detectRange = (player.activePowerup === 'INVIS')
-      ? 40
-      : GUARD_DETECT_RANGE;
+  const detectRange = (player.activePowerup === 'INVIS') 
+    ? 40 
+    : 150; // reduced from 200 so guards actually patrol
 
-    if (dist < detectRange && this.state !== 'ALERT') {
-    
-    audio.playGuardAlert();
+  if (dist < detectRange && this.state !== 'ALERT') {
+    try { audio.playGuardAlert(); } catch(e) {}
     this.state = 'ALERT';
-  } else if (dist > GUARD_DETECT_RANGE * 1.5) {
+  } else if (dist > 250) {
     this.state = 'PATROL';
   }
-  }
+}
 
   patrol(dt) {
     const target = this.patrolPoints[this.patrolIndex];

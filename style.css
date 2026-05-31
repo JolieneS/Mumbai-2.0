@@ -343,3 +343,11 @@ body {
   font-size: 15px;
   letter-spacing: 1px;
 }
+
+button:focus {
+  outline: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
