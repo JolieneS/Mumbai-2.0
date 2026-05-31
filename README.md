@@ -507,7 +507,7 @@ A huge thank you to **Delta** for this challenge. Building every system from scr
 
 ## 👤 Author
 
-**Jolie**
+**JolieneS**
 GitHub: [@JolieneS](https://github.com/JolieneS)
 
 ---
